@@ -6,7 +6,7 @@ block headContent
 		.field {
 			word-wrap: break-word;
 		}
-		
+
 
 block content
 	if (!result || !result.getrawtransaction)
@@ -24,7 +24,7 @@ block content
 
 						else
 							| ?
-								
+
 
 		+warningAlert
 			h6.mb-2 Transaction Details Unavailable
@@ -32,13 +32,13 @@ block content
 			if (blockHeight && global.prunedBlockchain && blockHeight < global.pruneHeight)
 				.mb-2 Blockchain <b>pruning</b> is enabled on your node. This setting tells your node that after validating transactions it may discard data that is non-essential for future validation needs.
 				.mb-0 The block that contains this transaction has been pruned, meaning that non-essential data has been deleted, including the details of this transaction.
-				
+
 
 			else if (!global.txindexAvailable)
 				| !{markdown(noTxIndexMsg)}
 
 	if (result && result.getrawtransaction)
-		+pageTitle("Transaction", txid, true, [["coinbase", "This is a coinbase transaction."]])
+		+pageTitle("Transaction", txid, true, [["layeredge", "This is a layeredge transaction."]])
 
 		+pageTabs(["Details", "Scripts", "JSON"])
 
@@ -79,7 +79,7 @@ block content
 							a.btn.btn-primary.btn-sm.me-2(href=`./changeSetting?name=txPageShowTechDetails&value=true`, title="Display technical details for this transaction.", data-bs-toggle="tooltip")
 								i.bi-plus-square.me-2
 								| Technical Details
-					
+
 
 				- var isTxConfirmed = true;
 				if (!result.getrawtransaction.confirmations || result.getrawtransaction.confirmations == 0)
@@ -93,7 +93,7 @@ block content
 						if (!isTxConfirmed)
 							+summaryItem("Status")
 								span.text-danger Unconfirmed
-									
+
 							+summaryItem("First Seen", "The time when this transaction entered your node's mempool.")
 								+timestamp(mempoolDetails.entry.time)
 
@@ -121,11 +121,11 @@ block content
 									| (
 									+confirmations(tx.confirmations)
 									| )
-							
+
 							+summaryItem("Date / Time")
 								if (tx.time)
 									+timestamp(result.getrawtransaction.time, {agoOptions:{oneElement:true}})
-										
+
 
 						if (isCoinbaseTx)
 							if (minerInfo)
@@ -142,9 +142,9 @@ block content
 									else
 										span
 											+primaryBadge(minerInfo.name, false)
-											
 
-							+summaryItem("Fees Collected", "The aggregate fees collected by the miner that created this coinbase transaction.")
+
+							+summaryItem("Fees Collected", "The aggregate fees collected by the miner that created this layeredge transaction.")
 								- var currencyValue = new Decimal(totalOutputValue).minus(totalInputValue);
 								+valueDisplay(currencyValue)
 
@@ -157,7 +157,7 @@ block content
 
 								else
 									- var feePaid = mempoolDetails ? new Decimal(mempoolDetails.entry.fees.base) : new Decimal(totalInputValue).minus(totalOutputValue);
-									
+
 									span #{utils.addThousandsSeparators(new DecimalRounded(feePaid).dividedBy(tx.vsize).times(100000000))}
 
 							+summaryItem("Total Fee")
@@ -169,7 +169,7 @@ block content
 								else
 									- var feePaid = mempoolDetails ? new Decimal(mempoolDetails.entry.fees.base) : new Decimal(totalInputValue).minus(totalOutputValue);
 									+valueDisplay(feePaid)
-										
+
 
 
 				- var daysDestroyed = new Decimal(0);
@@ -177,7 +177,7 @@ block content
 					- var vout = null;
 					if (result.txInputs && result.txInputs[xInputIndex])
 						- var vout = result.txInputs[xInputIndex];
-						
+
 						if (vout.utxoTime)
 							- var dt = result.getrawtransaction.time - vout.utxoTime;
 							- var dtDays = dt / 60 / 60 / 24;
@@ -226,25 +226,25 @@ block content
 						if (showLocktime)
 							+summaryItem("Locktime", "A specification of the earliest that a transaction may be mined. If this value is &leq; 500M, the value is interpreted as a block height; otherwise, it is interpreted as a unix timestamp.")
 								if (tx.locktime < 500000000 && !isTxConfirmed)
-									span.me-1 
+									span.me-1
 									a.border-dotted(href=`./block-height/${result.getrawtransaction.locktime}`, title=`May be mined at this block height, or later`, data-bs-toggle="tooltip") #{result.getrawtransaction.locktime.toLocaleString()}
 
 								else
 									+timestamp(result.getrawtransaction.locktime)
 									if (result.getrawtransaction.locktime > (new Date().getTime() / 1000))
-										span.border-dotted.ms-1(title=`This future-dated 'locktime' value is only possible because this is a coinbase transaction. Normally, locktime specifies the earliest that a transaction may be mined (included in a block). But, because this transaction was created by the miner in the process of mining a block, it is able to bypass some of the normal validity checks that nodes on the network perform on transactions.`, data-bs-toggle="tooltip")
+										span.border-dotted.ms-1(title=`This future-dated 'locktime' value is only possible because this is a layeredge transaction. Normally, locktime specifies the earliest that a transaction may be mined (included in a block). But, because this transaction was created by the miner in the process of mining a block, it is able to bypass some of the normal validity checks that nodes on the network perform on transactions.`, data-bs-toggle="tooltip")
 											i.bi-flag.text-tiny.text-warning
 
 						if (parseInt(daysDestroyed) > 0)
 							- var daysDestroyedDesc = `The sum of all input values multiplied by the number of days that input's UTXO existed before being spent. Large values can sometimes be interesting, indicating the spending of long-dormant coins. A 1 ${coinConfig.ticker} UTXO spent after 7 days dormant results in 7 days destroyed, as does a 7 ${coinConfig.ticker} UTXO spent after 1 day dormant.`;
-							
+
 							+summaryItem("Days Destroyed", daysDestroyedDesc, `${coinConfig.ticker.toLowerCase().substring(0, 1)}d`, `${coinConfig.name} Days`)
 								| #{utils.addThousandsSeparators(daysDestroyed.toDP(1))}
 
 
-				
+
 				- var inputsOutputsSectionTitle = `${tx.vin.length.toLocaleString()} Input${tx.vin.length == 1 ? "" : "s"}, ${tx.vout.length.toLocaleString()} Output${tx.vout.length == 1 ? "" : "s"}`;
-				
+
 				+sectionTitleBlock
 					.clearfix
 						.float-start #{inputsOutputsSectionTitle}
@@ -276,7 +276,7 @@ block content
 					- var totalIOValues = utils.getTxTotalInputOutputValues(tx, txInputs, blockHeight);
 
 					+txIoDetails(tx, txInputs, totalIOValues, blockHeight)
-						
+
 
 				if (mempoolDetails)
 					if (mempoolDetails.ancestors.length > 0)
@@ -299,7 +299,7 @@ block content
 										li
 											a(href=`./tx/${descendantTxid}`) #{descendantTxid}
 
-			
+
 			+pageTab("Scripts")
 				+contentSection("Input Scripts")
 					table.table
@@ -318,7 +318,7 @@ block content
 									td.word-wrap.text-break
 										if (vin.coinbase)
 											.mb-3(style="line-height: 1.75em;")
-												+successBadge("coinbase")
+												+successBadge("layeredge")
 
 												.mt-2
 													+hexDataDisplay(vin.coinbase)
@@ -350,8 +350,8 @@ block content
 											if (vin.txinwitness.length > maxWitnessDisplayCount)
 												span.text-muted.text-tiny.fw-bold (#{(vin.txinwitness.length - maxWitnessDisplayCount).toLocaleString()} more witness items)
 
-										
-						
+
+
 
 				+contentSection("Output Scripts")
 					table.table
@@ -388,13 +388,13 @@ block content
 														else
 															+hexDataDisplay(chunk, "hex,utf8,ascii")
 
-											
+
 
 
 			+pageTab("JSON")
 				if (result.getrawtransaction.hex.length <= 50000)
 					- var pillTabs = ["Transaction"];
-					
+
 					if (!mempoolDetails)
 						- pillTabs.push("Block Header");
 
@@ -406,7 +406,7 @@ block content
 					else
 
 					+pillTabs(pillTabs)
-					
+
 					.tab-content
 						+pageTab("Transaction", true)
 							+contentSection("Transaction")
@@ -419,12 +419,12 @@ block content
 								pre
 									code.text-json.json(data-lang="json") #{JSON.stringify(result.getblock, null, 4)}
 
-						
+
 						+pageTab("UTXOs")
 							+contentSection("UTXOs")
 								pre
 									code.text-json.json(data-lang="json") #{JSON.stringify(utxos, null, 4)}
-									
+
 
 						if (mempoolDetails)
 							+pageTab("Mempool Details")
@@ -439,7 +439,7 @@ block content
 					br
 					a(href=`./api/tx/${txid}`) #{txid}
 
-		
+
 block endOfBody
 
 	script.

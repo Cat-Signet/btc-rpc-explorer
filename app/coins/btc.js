@@ -60,31 +60,31 @@ const currencyUnits = [
 ];
 
 module.exports = {
-	name:"Bitcoin",
-	ticker:"BTC",
+	name:"LayerEdge",
+	ticker:"LE",
 	logoUrlsByNetwork:{
 		"main":"./img/network-mainnet/logo.svg",
 		"test":"./img/network-testnet/logo.svg",
 		"regtest":"./img/network-regtest/logo.svg",
-		"signet":"./img/network-signet/logo.svg"
+		"signet":"./img/layeredge/logo.svg"
 	},
 	coinIconUrlsByNetwork:{
 		"main":"./img/network-mainnet/coin-icon.svg",
 		"test":"./img/network-testnet/coin-icon.svg",
-		"signet":"./img/network-signet/coin-icon.svg",
+		"signet":"./img/layeredge/coin-icon.svg",
 		"regtest":"./img/network-regtest/coin-icon.svg"
 	},
 	coinColorsByNetwork: {
 		"main": "#F7931A",
 		"test": "#1daf00",
-		"signet": "#af008c",
+		"signet": "",
 		"regtest": "#777"
 	},
 	siteTitlesByNetwork: {
 		"main":"Bitcoin Explorer",
 		"test":"Testnet Explorer",
 		"regtest":"Regtest Explorer",
-		"signet":"Signet Explorer",
+		"signet":"  ",
 	},
 	demoSiteUrlsByNetwork: {
 		"main": "https://bitcoinexplorer.org",
@@ -120,7 +120,7 @@ module.exports = {
 	baseCurrencyUnit:currencyUnits[3],
 	defaultCurrencyUnit:currencyUnits[0],
 	feeSatoshiPerByteBucketMaxima: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 50, 75, 100, 150],
-	
+
 	halvingBlockIntervalsByNetwork: {
 		"main": 210000,
 		"test": 210000,
@@ -163,12 +163,12 @@ module.exports = {
 			"lastUpdated": 1681140656788
 		}
 	},
-	
+
 	genesisBlockHashesByNetwork:{
 		"main":	"000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f",
 		"test":	"000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943",
 		"regtest": "0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206",
-		"signet":  "00000008819873e925422c1ff0f99f7cc9bbb232af63a077a480a3633bee1ef6", 
+		"signet":  "00000008819873e925422c1ff0f99f7cc9bbb232af63a077a480a3633bee1ef6",
 	},
 	genesisCoinbaseTransactionIdsByNetwork: {
 		"main":	"4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
@@ -542,7 +542,7 @@ module.exports = {
 
 				return exchangeRates;
 			}
-			
+
 			return null;
 		}
 	},
@@ -553,12 +553,12 @@ module.exports = {
 
 			if (responseBody[0].topo && responseBody[0].topo.platform == "MT5") {
 				var prices = responseBody[0].spreadProfilePrices[0];
-				
+
 				return {
 					usd: prices.ask
 				};
 			}
-			
+
 			return null;
 		}
 	},
